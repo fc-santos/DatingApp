@@ -6,3 +6,4 @@ export * from './pagination.interface';
 export * from './user-params';
 export * from './member.interface';
 export * from './message.interface';
+export * from './group.interface';

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Member } from '@models';
 import { MembersService } from '@services/members.service';
+import { PresenceService } from '@services/presence.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -11,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 export class MemberCardComponent implements OnInit {
   @Input() member: Member;
 
-  constructor(private memberService: MembersService, private toastr: ToastrService) { }
+  constructor(private memberService: MembersService, private toastr: ToastrService, public presenceService: PresenceService) { }
 
   ngOnInit(): void {
   }

@@ -10,6 +10,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using API.Helpers;
+using API.SignalR;
 
 namespace API.Extensions
 {
@@ -29,6 +30,8 @@ namespace API.Extensions
             {
                 options.UseSqlite(config.GetConnectionString("DefaultConnection"));
             });
+            services.AddSignalR();
+            services.AddSingleton<PresenceTracker>();
 
             return services;
         }
