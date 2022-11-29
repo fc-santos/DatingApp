@@ -10,9 +10,10 @@ import { MessageService } from '@services/message.service';
   styleUrls: ['./member-messages.component.css']
 })
 export class MemberMessagesComponent implements OnInit {
-  @ViewChild('messageForm') messageForm: NgForm;
-  @Input() username: string;
+  @ViewChild('messageForm') messageForm?: NgForm;
+  @Input() username?: string;
   messageContent: string;
+  loading = false;
 
   constructor(public messageService: MessageService) { }
 
@@ -20,8 +21,10 @@ export class MemberMessagesComponent implements OnInit {
   }
 
   sendMessage() {
+    if (!this.username) return;
+    this.loading = true;
     this.messageService.sendMessage(this.username, this.messageContent).then(() => {
-      this.messageForm.reset();
-    })
+      this.messageForm?.reset();
+    }).finally(() => this.loading = false);
   }
 }
