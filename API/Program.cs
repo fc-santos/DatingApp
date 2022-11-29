@@ -10,17 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
+builder.Services.AddControllers();
 
 var connString = "";
-var connUrl = "";
 if (builder.Environment.IsDevelopment())
     connString = builder.Configuration.GetConnectionString("DefaultConnection");
 else
 {
-    connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
     // Parse connection URL to connection string for Npgsql
     connUrl = connUrl.Replace("postgres://", string.Empty);
@@ -35,6 +34,7 @@ else
 
     connString = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb};";
 }
+
 builder.Services.AddDbContext<DataContext>(opt =>
 {
     opt.UseNpgsql(connString);
@@ -61,6 +61,7 @@ app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
 app.MapFallbackToController("Index", "Fallback");
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -79,4 +80,4 @@ catch (Exception ex)
     logger.LogError(ex, "An error occurred during migration");
 }
 
-app.Run();
+await app.RunAsync();
